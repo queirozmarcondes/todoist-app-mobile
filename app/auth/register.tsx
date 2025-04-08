@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Input } from "../components/ui/Input";
-import { Button } from "../components/ui/Button";
+import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
 import { useState } from "react";
 import { useRouter } from "expo-router";
+import api from "@/services/api";
+import { Colors } from "@/constants/Colors";
 
 export default function RegisterScreen() {
     const router = useRouter();
@@ -10,8 +12,19 @@ export default function RegisterScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    function handleRegister() {
-        console.log("Cadastro:", { name, email, password });
+    async function handleRegister() {
+        try {
+            const response = await api.post("/users", {
+                name,
+                email,
+                password,
+            });
+
+            console.log("Usuário cadastrado:", response.data);
+            // Redirecionar ou logar o usuário automaticamente
+        } catch (error: any) {
+            console.error("Erro ao cadastrar:", error?.response?.data || error.message);
+        }
     }
 
     return (
@@ -37,17 +50,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: Colors.default.background,
     },
     title: {
         fontSize: 24,
         fontWeight: "bold",
         marginBottom: 20,
         textAlign: "center",
+        color: Colors.default.icon,
     },
     loginText: {
         textAlign: "center",
-        color: "#007bff",
+        color: Colors.default.button,
         fontSize: 16,
         fontWeight: "bold",
         marginTop: 10,
